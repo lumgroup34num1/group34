@@ -135,8 +135,8 @@ c9 78 10 77
 ![image](https://github.com/lumgroup34num1/project10/assets/129478488/6666f5cd-bf3b-4e99-aa29-a2b8c0b794b5)
 
 
-# project11 impl sm2 with RFC6979
-## 1、实验原理
+## project11 impl sm2 with RFC6979
+### 1、实验原理
   ECDSA是ECC与DSA的结合，整个签名过程与DSA类似，所不一样的是签名中采取的算法为ECC，最后签名出来的值也是分为r,s。
 签名过程如下：
 1、选择一条椭圆曲线Ep(a,b)，和基点G；
@@ -160,47 +160,103 @@ c9 78 10 77
 3、验证等式：r1 ≡ r mod p。
 
 4、如果等式成立，接受签名，否则签名无效。
-## 2、运行结果
+### 2、运行结果
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/552d778b-2ec4-42fd-a013-229a09e4de1b)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/6aeca06a-c309-458d-9211-1cc62c303965)
-# project 12 verify the above pitfalls with proof-of-concept code
+## project 12 verify the above pitfalls with proof-of-concept code
+
+### 实验步骤
+
+&emsp;&emsp;其中3个算法的signature pitfalls原理大致相同，此处前四种情况以sm2为例，伪造签名以ECDSA为例，其它算法的原理可见代码注释，此处不再重复。
+
+#### 1. Leaking k leads to leaking of d
+
+![leakingk.png](https://s2.loli.net/2022/07/27/v3cOR4KTup8jtwB.png)
+
+#### 2. Reusing k leads to leaking of d
+
+![reusing k.png](https://s2.loli.net/2022/07/27/RZWp81JgKueoIbw.png)
+
+#### 3. Tow users's same k leaks d
+
+![diff k.png](https://s2.loli.net/2022/07/27/Dfg2NPBRYMCA8ZV.png)
+
+#### 4. same d and k with ECDSA lead to leaking of d
+
+![withecdsa.png](https://s2.loli.net/2022/07/27/TD53pxFdywRI9oM.png)
+
+#### 5. Forge signature if only H(m) is checked
+
+![伪造原理.png](https://s2.loli.net/2022/07/27/LWVSTnaitY2jskC.png)
+### 实验结果
+    
+&emsp;&emsp;完成了表格中三个算法的大部分signature pitfalls，包括ECDSA、Schnorr、SM2-Sig算法的泄露k、重复使用k、不同用户使用相同k、与ECDSA算法使用相同k造成私钥泄露的实例，完成了ECDSA和Schnorr算法的仅提供H(m)下的签名伪造实例。
+![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/7e38d7d2-3605-4af7-b2bc-8786b9230a0a)
+![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/97933815-8f55-4197-a249-c3ff27c50d96)
+![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/34aca231-c2f3-46c3-ae02-b43b3baead25)
 
 
-## project13 Implement the above ECMH scheme
+
+### project13 Implement the above ECMH scheme
 使用SM3算法  
 映射方式为转化数字映射到x  
 若不存在点（X,Y），或者说(pow(x1,3,p)+a*x1+b)%p不是p的二次剩余，则对X加1，再次尝试。
 ![image](https://github.com/lumgroup34num1/project13/assets/129478488/779307cc-96e5-415f-9b03-7e4dedcdd0f0)
 
-# project 14 Implement a PGP scheme with SM2
-## 1、实验原理
+## project 14 Implement a PGP scheme with SM2
+### 1、实验原理
 两方PGP通信采用TCP通信模拟真实网络通信过程，使用sm2密钥协商算法协商对称密钥，再使用AES加密以协商得到的密钥加密临时会话密钥，并使用AES加密以临时会话密钥加密通信消息。
-## 2、实验结果
+### 2、实验结果
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/8733a5d6-441a-4ecb-adf7-0a1ff76442e8)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/b0589df7-5362-4644-86ce-4e9ec09ed7e8)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/63208b8e-95f8-4244-93d5-9836c0ae7ae5)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/8a7c4958-5243-4aa1-b84b-cb172498c8a7)
-# project 15 implement sm2 2P sign with real network communication
-## 1、实验原理
+## project 15 implement sm2 2P sign with real network communication
+### 1、实验原理
 ![sig.png](https://s2.loli.net/2022/07/28/quDUW4d1tXr2ayM.png)
 <p align="center">两方SM2签名原理</p>
 
-## 2、实验结果
+### 2、实验结果
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/4e09d4ae-a030-43d5-8634-4541938b0bc8)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/cc8d31a8-5755-4e0d-b6c6-da12c4543367)
 
-# project 16 implement sm2 2P decrypt with real network communication
-## 1、实验原理
+## project 16 implement sm2 2P decrypt with real network communication
+### 1、实验原理
 ![dec.png](https://s2.loli.net/2022/07/28/IH1CRJBVi74xZ2n.png)
 <p align="center">两方SM2解密原理</p>
 
-## 2、实验结果
+### 2、实验结果
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/9cedb6f0-ae3e-4935-9bc3-d6a83c0694be)
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/9b608455-d909-4645-af27-96aedf836d84)
 
-# project 17  PoC impl of the scheme, or do implement analysis by Google
-## 1、实验原理
+## project 17  PoC impl of the scheme, or do implement analysis by Google
+### 1、实验原理
 ![image](https://github.com/lumgroup34num1/SM2include11-17/assets/129478488/eac60fb2-200b-4cc5-897f-9a2e750f17dd)
 采用TCP通信模拟真实网络通信过程，完成了模拟Google Password Checkup，效果为能在用户不向服务器泄露私钥、服务器不向用户透露已泄露密码的前提下使用户检查服务器泄露密码库中是否有自己的密码从而进行检测，部分原理类似DH密钥交换。
-## 2、实验结果
+### 2、实验结果
 ![pascheck_server.png](https://s2.loli.net/2022/07/30/ELncHd4DyKXPuQf.png)
+
+## project18  send a tx on Bitcoin testnet, and parse the tx data down to every bit, better write script yourself
+### 1、实验原理
+
+![block.jpeg](https://s2.loli.net/2022/07/27/vwaiTqSogrBNx9d.png)
+
+  由于比特币区块的各个字段的位置和长度相对固定，因此根据结构拆解出HEADER、Coinbase Trade、Common Trade部分并解释出各字段值即可。此处实际完成了获取测试网地址并申请比特币和发布交易。
+### 2、实验结果
+![image](https://github.com/lumgroup34num1/project18/assets/129478488/d765c9a2-4b0b-4c6d-98a1-9c2aa6049cde)  
+
+结果文件已上传
+
+## project19 forge a signature to pretend that you are Satoshi
+
+ECDSA算法在仅要求指定H(m)和拥有正确签名的情况下很容易伪造签名。
+### 实验结果
+![image](https://github.com/lumgroup34num1/project19/assets/129478488/129b5614-adb6-4687-81af-dd777200d1eb)
+
+## project21 research report on MPT
+![image](https://github.com/lumgroup34num1/project21/assets/129478488/c5041431-b284-4242-8366-fe801a2ceb9a)
+
+
+&emsp;&emsp;对MTP整体结构进行理解，并对开源MTP代码进行对照注释。
+
+
